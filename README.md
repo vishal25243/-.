@@ -1,4 +1,4 @@
- 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -197,7 +197,8 @@
                 <div class="bg-blue-50 p-4 rounded-lg mb-6">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-gray-600">Balance</span>
-                        <span class="text-blue-600 font-medium">$1,250.00</span>
+                        <span class="text-blue-600 font-medium">$<span id="senderBalance">1250.00</span></span>
+
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Account</span>
@@ -275,7 +276,8 @@
                 <div class="bg-gray-50 p-4 rounded-lg mb-6">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Balance</span>
-                        <span class="text-gray-800 font-medium">$850.00</span>
+                          <span class="text-gray-800 font-medium">$<span id="receiverBalance">850.00</span></span>
+
                     </div>
                 </div>
                 
@@ -505,7 +507,32 @@
                     // Update receiver UI
                     document.getElementById('receivedAmount').textContent = parseFloat(amount).toFixed(2);
                     document.getElementById('paymentNote').textContent = note || 'No note provided';
-                    document.getElementById('newBalance').textContent = (850 + parseFloat(amount)).toFixed(2);
+                    // Get current balances
+let senderBalance = parseFloat(document.getElementById('senderBalance').textContent);
+let receiverBalance = parseFloat(document.getElementById('receiverBalance').textContent);
+let transferAmount = parseFloat(amount);
+
+// Check if sender has enough balance
+if (transferAmount > senderBalance) {
+    alert("Insufficient balance!");
+    sendButton.disabled = false;
+    sendButton.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Send Payment';
+    return;
+}
+
+// Deduct from sender
+senderBalance -= transferAmount;
+document.getElementById('senderBalance').textContent = senderBalance.toFixed(2);
+
+// Add to receiver
+receiverBalance += transferAmount;
+document.getElementById('receiverBalance').textContent = receiverBalance.toFixed(2);
+
+// Update receiver UI display
+document.getElementById('receivedAmount').textContent = transferAmount.toFixed(2);
+document.getElementById('paymentNote').textContent = note || 'No note provided';
+document.getElementById('newBalance').textContent = receiverBalance.toFixed(2);
+
                     
                     // Show received payment on device 2
                     device2Receive.classList.add('hidden');
